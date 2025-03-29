@@ -4,6 +4,11 @@ services:
     container_name: tegola-redis
     ports:
       - 6379:6379
+    environment:
+      REDIS_PASSWORD: mysecurepassword
+    command: redis-server --requirepass mysecurepassword --maxmemory 512mb --maxmemory-policy allkeys-lru
+    volumes:
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
 
   tegola-mvt-postgis-provider:
     image: gospatial/tegola:v0.16.0
@@ -16,13 +21,13 @@ services:
     command: >
       serve --config /data/config-mvt-postgis.toml
     environment:
-      DB_HOST: db-postgresql-fra1-81904-do-user-15998940-0.c.db.ondigitalocean.com
-      DB_PORT: 25060
-      DB_NAME: defaultdb
-      DB_USER: doadmin
-      DB_PASSWORD: AVNS_vzGFs6VuYr5BHKpOB2w
-      TEGOLA_POSTGIS_SSL: require
+      DB_HOST: host.docker.internal
+      DB_PORT: 5432
+      DB_NAME: urbandata
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      TEGOLA_POSTGIS_SSL: disable
       TEGOLA_REDIS_SSL: false
       REDIS_HOST: redis:6379
-      REDIS_PASSWORD: ""
+      REDIS_PASSWORD: mysecurepassword
       TEGOLA_SQL_DEBUG: LAYER_SQL
